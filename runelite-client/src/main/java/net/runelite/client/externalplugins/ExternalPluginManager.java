@@ -56,6 +56,7 @@ import javax.inject.Singleton;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.RuneLite;
+import net.runelite.client.RuneLiteProperties;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.eventbus.EventBus;
@@ -135,7 +136,9 @@ public class ExternalPluginManager
 
 	private void refreshPlugins()
 	{
-		if (safeMode)
+        log.info("DEBUG: PluginHub version in use = {}", RuneLiteProperties.getPluginHubVersion());
+
+        if (safeMode)
 		{
 			log.debug("External plugins are disabled in safe mode!");
 			return;

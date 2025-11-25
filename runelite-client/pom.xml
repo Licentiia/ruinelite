@@ -36,7 +36,9 @@
 	<name>RuneLite Client</name>
 
 	<properties>
-		<jarsigner.skip>true</jarsigner.skip>
+        <pluginhub.version>1.12.5.2</pluginhub.version>
+
+        <jarsigner.skip>true</jarsigner.skip>
 		<pmd.skip>true</pmd.skip>
 		<git.commit.id.abbrev>nogit</git.commit.id.abbrev>
 		<git.dirty>false</git.dirty>
