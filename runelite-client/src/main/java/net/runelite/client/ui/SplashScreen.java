@@ -24,23 +24,15 @@
  */
 package net.runelite.client.ui;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import javax.annotation.Nullable;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import lombok.extern.slf4j.Slf4j;
@@ -50,8 +42,22 @@ import net.runelite.client.util.ImageUtil;
 @Slf4j
 public class SplashScreen extends JFrame implements ActionListener
 {
-	private static final int WIDTH = 200;
-	private static final int PAD = 10;
+    private static final String VERSION = loadVersion();
+
+    private static final Color BG_TOP = new Color(13, 17, 24);
+    private static final Color BG_BOTTOM = new Color(6, 9, 13);
+    private static final Color PANEL_GLOW = new Color(255, 215, 130, 20);
+    private static final Color GOLD = new Color(230, 179, 10); // headline
+    private static final Color GOLD_DARK = new Color(168, 121, 49);
+    private static final Color TEXT_PRIMARY = new Color(240, 240, 240);
+    private static final Color TEXT_SECONDARY = new Color(180, 180, 180);
+    private static final Color PROGRESS_TRACK = new Color(28, 32, 40);
+    private static final Color PROGRESS_FILL_A = new Color(255, 201, 90);
+    private static final Color PROGRESS_FILL_B = new Color(200, 146, 54);
+    private static final Color PROGRESS_SHINE = new Color(255, 255, 255, 70);
+
+	private static final int PAD = 14;
+	private static final int ARC = 20;
 
 	private static SplashScreen INSTANCE;
 
@@ -64,91 +70,199 @@ public class SplashScreen extends JFrame implements ActionListener
 	private volatile String actionText = "Loading";
 	private volatile String subActionText = "";
 	private volatile String progressText = null;
+    private int shimmerX = 0;
+
+    private int frameWidth;
+    private int contentY;
+
+    private final JPanel backgroundPanel = new JPanel(null)
+    {
+        @Override
+        protected void paintComponent(Graphics g)
+        {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int w = getWidth();
+            int h = getHeight();
+
+            GradientPaint gp = new GradientPaint(0, 0, BG_TOP, 0, h, BG_BOTTOM);
+            g2.setPaint(gp);
+            g2.fillRoundRect(0, 0, w, h, ARC, ARC);
+
+            g2.setColor(PANEL_GLOW);
+            g2.setStroke(new BasicStroke(2f));
+            g2.drawRoundRect(1, 1, w - 2, h - 2, ARC, ARC);
+
+            g2.dispose();
+        }
+    };
 
 	private SplashScreen()
 	{
-		setTitle("RuneLite Launcher");
+        BufferedImage logo = ImageUtil.loadImageResource(
+                SplashScreen.class, "ruinelite/ruinelite-logo.png");
 
+        final int LOGO_W = logo.getWidth();
+        final int LOGO_H = logo.getHeight();
+        frameWidth = Math.max(LOGO_W + PAD * 2, 320);
+
+        // Window configurations
+		setTitle("RuinElite Launcher");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
 		setIconImages(Arrays.asList(ClientUI.ICON_128, ClientUI.ICON_16));
-		setLayout(null);
-		Container pane = getContentPane();
-		pane.setBackground(ColorScheme.DARKER_GRAY_COLOR);
 
-		Font font = new Font(Font.DIALOG, Font.PLAIN, 12);
+        setContentPane(backgroundPanel);
+        backgroundPanel.setOpaque(false);
 
-		BufferedImage logo = ImageUtil.loadImageResource(SplashScreen.class, "runelite_splash.png");
-		JLabel logoLabel = new JLabel(new ImageIcon(logo));
-		pane.add(logoLabel);
-		logoLabel.setBounds(0, 0, WIDTH, WIDTH);
+        System.setProperty("awt.useSystemAAFontSettings", "on");
+        System.setProperty("swing.aatext", "true");
 
-		int y = WIDTH;
+        Font titleFont = new Font(Font.DIALOG, Font.BOLD, 16);
+        Font smallFont = new Font(Font.DIALOG, Font.PLAIN, 11);
+        Font bodyFont = new Font(Font.DIALOG, Font.PLAIN, 12);
 
-		pane.add(action);
-		action.setForeground(Color.WHITE);
-		action.setBounds(0, y, WIDTH, 16);
-		action.setHorizontalAlignment(SwingConstants.CENTER);
-		action.setFont(font);
-		y += action.getHeight() + PAD;
+        // Header
+        JLabel titleLabel = new JLabel("RuinElite × RuneLite", SwingConstants.CENTER);
+        titleLabel.setForeground(GOLD);
+        titleLabel.setFont(titleFont);
+        backgroundPanel.add(titleLabel);
+        titleLabel.setBounds(0, 6, frameWidth, 22);
 
-		pane.add(progress);
-		progress.setForeground(ColorScheme.BRAND_ORANGE);
-		progress.setBackground(ColorScheme.BRAND_ORANGE.darker().darker());
-		progress.setBorder(new EmptyBorder(0, 0, 0, 0));
-		progress.setBounds(0, y, WIDTH, 14);
-		progress.setFont(font);
-		progress.setUI(new BasicProgressBarUI()
-		{
-			@Override
-			protected Color getSelectionBackground()
-			{
-				return Color.BLACK;
-			}
+        JLabel versionLabel = new JLabel("Build: " + VERSION, SwingConstants.CENTER);
+        versionLabel.setForeground(TEXT_SECONDARY);
+        versionLabel.setFont(smallFont);
+        backgroundPanel.add(versionLabel);
+        versionLabel.setBounds(0, 26, frameWidth, 14);
 
-			@Override
-			protected Color getSelectionForeground()
-			{
-				return Color.BLACK;
-			}
-		});
-		y += 12 + PAD;
+        // Logo
+        JLabel logoLabel = new JLabel(new ImageIcon(logo));
+        int logoX = (frameWidth - LOGO_W) / 2;
+        contentY = 26 + 14 + PAD;
+        backgroundPanel.add(logoLabel);
+        logoLabel.setBounds(logoX, contentY, LOGO_W, LOGO_H);
+        contentY += LOGO_H + PAD;
 
-		pane.add(subAction);
-		subAction.setForeground(Color.LIGHT_GRAY);
-		subAction.setBounds(0, y, WIDTH, 16);
-		subAction.setHorizontalAlignment(SwingConstants.CENTER);
-		subAction.setFont(font);
-		y += subAction.getHeight() + PAD;
+        // Status
+        action.setForeground(TEXT_PRIMARY);
+        action.setHorizontalAlignment(SwingConstants.CENTER);
+        action.setFont(bodyFont);
+        backgroundPanel.add(action);
+        action.setBounds(PAD, contentY, frameWidth - PAD * 2, 18);
+        contentY += 18 + 8;
 
-		setSize(WIDTH, y);
-		setLocationRelativeTo(null);
+        // Progress bar
+        progress.setVisible(true);
+        progress.setForeground(GOLD);
+        progress.setBackground(PROGRESS_TRACK);
+        progress.setBorder(new EmptyBorder(0, 0, 0, 0));
+        progress.setBounds(PAD, contentY, frameWidth - PAD * 2, 16);
+        progress.setFont(bodyFont);
+        progress.setIndeterminate(false);
+        progress.setUI(new SmoothGoldProgressUI());
+        backgroundPanel.add(progress);
+        contentY += 16 + 6;
 
-		timer = new Timer(100, this);
-		timer.setRepeats(true);
-		timer.start();
+        subAction.setForeground(TEXT_SECONDARY);
+        subAction.setHorizontalAlignment(SwingConstants.CENTER);
+        subAction.setFont(smallFont);
+        backgroundPanel.add(subAction);
+        subAction.setBounds(PAD, contentY, frameWidth - PAD * 2, 16);
+        contentY += 16 + PAD;
+
+        setSize(frameWidth, contentY);
+        setLocationRelativeTo(null);
+        setBackground(new Color(0, 0, 0, 0)); // allow shaped window
+        setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), ARC, ARC));
+
+        timer = new Timer(33, this);
+        timer.setRepeats(true);
+        timer.start();
 
 		setVisible(true);
 	}
+
+    private class SmoothGoldProgressUI extends BasicProgressBarUI
+    {
+        @Override
+        protected void paintDeterminate(Graphics g, JComponent c)
+        {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int w = progress.getWidth();
+            int h = progress.getHeight();
+            int x = 0;
+            int y = 0;
+
+            g2.setColor(PROGRESS_TRACK);
+            g2.fillRoundRect(x, y, w, h, h, h);
+
+            int amountFull = getAmountFull(progress.getInsets(), w, h);
+
+            GradientPaint gp = new GradientPaint(0, y, PROGRESS_FILL_A, 0, y + h, PROGRESS_FILL_B);
+            g2.setPaint(gp);
+            g2.fillRoundRect(x, y, amountFull, h, h, h);
+
+            int stripeWidth = Math.max(h, 18);
+            int sx = (shimmerX % (w + stripeWidth)) - stripeWidth;
+            GradientPaint shine = new GradientPaint(
+                    sx, 0, new Color(255, 255, 255, 0),
+                    sx + stripeWidth / 2f, 0, PROGRESS_SHINE,
+                    true);
+            g2.setPaint(shine);
+            g2.fillRoundRect(x, y, amountFull, h, h, h);
+
+            g2.setColor(GOLD_DARK.darker());
+            g2.setStroke(new BasicStroke(1f));
+            g2.drawRoundRect(x, y, w - 1, h - 1, h, h);
+
+            if (progress.isStringPainted())
+            {
+                String str = progress.getString();
+                g2.setFont(progress.getFont());
+                FontMetrics fm = g2.getFontMetrics();
+                int tx = (w - fm.stringWidth(str)) / 2;
+                int ty = (h + fm.getAscent() - fm.getDescent()) / 2;
+                g2.setColor(Color.BLACK);
+                g2.drawString(str, tx + 1, ty + 1);
+                g2.setColor(new Color(250, 250, 250));
+                g2.drawString(str, tx, ty);
+            }
+
+            g2.dispose();
+        }
+
+        @Override
+        protected void paintIndeterminate(Graphics g, JComponent c)
+        {
+            paintDeterminate(g, c);
+        }
+    }
 
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		action.setText(actionText);
 		subAction.setText(subActionText);
+
 		progress.setMaximum(1000);
 		progress.setValue((int) (overallProgress * 1000));
 
-		String progressText = this.progressText;
 		if (progressText == null)
 		{
 			progress.setStringPainted(false);
+            progress.setString(null);
 		}
 		else
 		{
 			progress.setStringPainted(true);
 			progress.setString(progressText);
 		}
+
+        shimmerX += 6;
+        progress.repaint();
 	}
 
 	public static boolean isOpen()
@@ -245,4 +359,18 @@ public class SplashScreen extends JFrame implements ActionListener
 			INSTANCE.progressText = progressText;
 		}
 	}
+
+    private static String loadVersion()
+    {
+        try
+        {
+            var props = new java.util.Properties();
+            props.load(SplashScreen.class.getResourceAsStream("/version/version.properties"));
+            return props.getProperty("combined.version", "unknown");
+        }
+        catch (Exception e)
+        {
+            return "unknown";
+        }
+    }
 }
