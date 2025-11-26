@@ -251,7 +251,7 @@ public class RuneLite
 			}
 
 			log.info("RuneLite {} (launcher version {}) starting up, args: {}",
-				RuneLiteProperties.getVersion(), MoreObjects.firstNonNull(RuneLiteProperties.getLauncherVersion(), "unknown"),
+				RuneLiteProperties.getVersion(), MoreObjects.firstNonNull(RuneLiteProperties.getLauncherVersion(), "RuinElite-1.0.0"),
 				args.length == 0 ? "none" : String.join(" ", args));
 
 			final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
@@ -339,8 +339,8 @@ public class RuneLite
 		pluginManager.loadDefaultPluginConfiguration(null);
 
 		// Start client session
-		clientSessionManager.start();
-		eventBus.register(clientSessionManager);
+		//clientSessionManager.start();
+		//eventBus.register(clientSessionManager);
 
 		SplashScreen.stage(.75, null, "Starting core interface");
 
