@@ -37,6 +37,14 @@
 
 	<properties>
         <pluginhub.version>1.12.5.2</pluginhub.version>
+        <ruinelite.version>1.0.0</ruinelite.version>
+        <runelite.version>1.12.6</runelite.version>
+        <combined.version>${ruinelite.version}-${runelite.version}</combined.version>
+
+        <jarsigner.keystore></jarsigner.keystore>
+        <jarsigner.alias></jarsigner.alias>
+        <jarsigner.storepass></jarsigner.storepass>
+        <jarsigner.keypass></jarsigner.keypass>
 
         <jarsigner.skip>true</jarsigner.skip>
 		<pmd.skip>true</pmd.skip>
