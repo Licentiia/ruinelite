@@ -72,7 +72,7 @@ public class SplashScreen extends JFrame implements ActionListener
 	private volatile String progressText = null;
 	private int shimmerX = 0;
 
-	private int frameWidth;
+	private final int frameWidth;
 	private int contentY;
 
 	private final JPanel backgroundPanel = new JPanel(null)
