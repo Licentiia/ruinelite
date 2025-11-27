@@ -136,9 +136,9 @@ public class ExternalPluginManager
 
 	private void refreshPlugins()
 	{
-        log.info("DEBUG: PluginHub version in use = {}", RuneLiteProperties.getPluginHubVersion());
+		log.info("DEBUG: PluginHub version in use = {}", RuneLiteProperties.getPluginHubVersion());
 
-        if (safeMode)
+		if (safeMode)
 		{
 			log.debug("External plugins are disabled in safe mode!");
 			return;
