@@ -174,7 +174,10 @@ public class PluginManagerTest
 
 		for (Plugin p : pluginManager.getPlugins())
 		{
-			try (PrintWriter out = new PrintWriter(new File(dotFolder, p.getName() + ".dot"), "UTF-8"))
+			// Sanitize plugin name to avoid illegal Windows filename characters
+			String safeName = p.getName().replaceAll("[^a-zA-Z0-9._ -]", "_");
+
+			try (PrintWriter out = new PrintWriter(new File(dotFolder, safeName + ".dot"), "UTF-8"))
 			{
 				graphvizGrapher.setOut(out);
 				graphvizGrapher.setRankdir("TB");
