@@ -1,0 +1,105 @@
+package net.runelite.client.plugins.ruinelite.utils.projectiledetector;
+
+import net.runelite.client.config.*;
+
+@ConfigGroup(ProjectileDetectorConfig.GROUP)
+public interface ProjectileDetectorConfig extends Config
+{
+    String GROUP = "ProjectileDetector";
+
+    @ConfigItem(
+            keyName = "enabled",
+            name = "Enable overlay",
+            description = "Master enable/disable"
+    )
+    default boolean enabled() { return true; }
+
+    @ConfigItem(
+            keyName = "enableZulrahPreset",
+            name = "Preset: Zulrah (Mage/Range)",
+            description = "Adds known Zulrah projectile → prayer rules"
+    )
+    default boolean enableZulrahPreset() { return true; }
+
+    @ConfigItem(
+            keyName = "extraMappings",
+            name = "Extra mappings (id=label)",
+            description = "One per line: projectileId=Label (e.g. 1044=Mage, 335=Range)"
+    )
+    default String extraMappings() { return ""; }
+
+    @ConfigItem(
+            keyName = "showIcon",
+            name = "Show prayer icon (over projectile)",
+            description = "Draw Protect from Magic/Missiles/Melee icon above the projectile"
+    )
+    default boolean showIcon() { return true; }
+
+    @ConfigItem(
+            keyName = "showLabel",
+            name = "Show text label (over projectile)",
+            description = "Draw label text box under the icon"
+    )
+    default boolean showLabel() { return true; }
+
+    @ConfigItem(
+            keyName = "onlyIfTargetingLocal",
+            name = "Only if targeting me",
+            description = "Only show for projectiles targeting you"
+    )
+    default boolean onlyIfTargetingLocal() { return true; }
+
+    @ConfigItem(
+            keyName = "enableFontSizeOverride",
+            name = "Enable font size override",
+            description = "If on, uses the font size below"
+    )
+    default boolean enableFontSizeOverride() { return false; }
+
+    @Range(min = 10, max = 32)
+    @ConfigItem(
+            keyName = "fontSize",
+            name = "Font size",
+            description = "Text size in points"
+    )
+    default int fontSize() { return 14; }
+
+    @Range(min = -50, max = 50)
+    @ConfigItem(
+            keyName = "verticalOffset",
+            name = "Vertical offset (scene labels)",
+            description = "Adjust vertical position of icon/label (pixels)"
+    )
+    default int verticalOffset() { return 0; }
+
+    /* ========= Queue Panel (fixed UI) ========= */
+
+    @ConfigItem(
+            keyName = "showQueuePanel",
+            name = "Show queue panel",
+            description = "Fixed panel showing NOW/NEXT/LATER with icons + labels + ticks"
+    )
+    default boolean showQueuePanel() { return true; }
+
+    @Range(min = 1, max = 8)
+    @ConfigItem(
+            keyName = "queueEntries",
+            name = "Queue length",
+            description = "How many upcoming prayers to list"
+    )
+    default int queueEntries() { return 3; }
+
+    @ConfigItem(
+            keyName = "showTickCountdown",
+            name = "Show tick countdown",
+            description = "Shows remaining ticks for each upcoming prayer in the queue"
+    )
+    default boolean showTickCountdown() { return true; }
+
+    @ConfigItem(
+            keyName = "queueEmptyText",
+            name = "Empty panel text",
+            description = "Shown when no threats are detected"
+    )
+    default String queueEmptyText() { return "Waiting..."; }
+}
