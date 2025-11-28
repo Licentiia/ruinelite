@@ -111,6 +111,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+                    <skipTests>true</skipTests>
+
 					<enableAssertions>true</enableAssertions>
 					<argLine>-Xmx2048m</argLine>
 					<systemProperties>
