@@ -18,95 +18,95 @@ import net.runelite.client.ui.overlay.OverlayManager;
 
 @Slf4j
 @PluginDescriptor(
-        name = PluginDescriptor.Zebe + " Projectile Indicator",
-        description = "Shows prayer icon + label for dangerous projectiles.",
-        tags = {"zebe", "cb"}
+		name = PluginDescriptor.Zebe + " Projectile Indicator",
+		description = "Shows prayer icon + label for dangerous projectiles.",
+		tags = {"zebe", "cb"}
 )
 public class ProjectileDetectorPlugin extends Plugin
 {
-    @Inject private Client client;
-    @Inject private SpriteManager spriteManager;
-    @Inject private ProjectileDetectorOverlay overlay;
-    @Inject private ProjectileDetectorConfig config;
-    @Inject private OverlayManager overlayManager;
-    @Inject private ProjectileDetectorQueueOverlay queueOverlay;
+	@Inject private Client client;
+	@Inject private SpriteManager spriteManager;
+	@Inject private ProjectileDetectorOverlay overlay;
+	@Inject private ProjectileDetectorConfig config;
+	@Inject private OverlayManager overlayManager;
+	@Inject private ProjectileDetectorQueueOverlay queueOverlay;
 
 
-    @Getter
-    private final Map<Integer, ProjectileRule> rules = new HashMap<>();
+	@Getter
+	private final Map<Integer, ProjectileRule> rules = new HashMap<>();
 
-    @Provides
-    ProjectileDetectorConfig provideConfig(ConfigManager configManager)
-    {
-        return configManager.getConfig(ProjectileDetectorConfig.class);
-    }
+	@Provides
+	ProjectileDetectorConfig provideConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(ProjectileDetectorConfig.class);
+	}
 
-    @Override
-    protected void startUp()
-    {
-        overlayManager.add(overlay);
-        overlayManager.add(queueOverlay);
+	@Override
+	protected void startUp()
+	{
+		overlayManager.add(overlay);
+		overlayManager.add(queueOverlay);
 
-        rebuildRules();
-        log.debug("Projectile Pray Helper started");
-    }
+		rebuildRules();
+		log.debug("Projectile Pray Helper started");
+	}
 
-    @Override
-    protected void shutDown()
-    {
-        overlayManager.remove(overlay);
-        overlayManager.remove(queueOverlay);
+	@Override
+	protected void shutDown()
+	{
+		overlayManager.remove(overlay);
+		overlayManager.remove(queueOverlay);
 
-        rules.clear();
-        log.debug("Projectile Pray Helper stopped");
-    }
+		rules.clear();
+		log.debug("Projectile Pray Helper stopped");
+	}
 
-    @Subscribe
-    public void onProjectileMoved(ProjectileMoved event)
-    {
+	@Subscribe
+	public void onProjectileMoved(ProjectileMoved event)
+	{
 
-    }
+	}
 
-    @Subscribe
-    public void onConfigChanged(net.runelite.client.events.ConfigChanged e)
-    {
-        if (!ProjectileDetectorConfig.GROUP.equals(e.getGroup()))
-        {
-            return;
-        }
-        rebuildRules();
-    }
+	@Subscribe
+	public void onConfigChanged(net.runelite.client.events.ConfigChanged e)
+	{
+		if (!ProjectileDetectorConfig.GROUP.equals(e.getGroup()))
+		{
+			return;
+		}
+		rebuildRules();
+	}
 
-    private void rebuildRules()
-    {
-        rules.clear();
+	private void rebuildRules()
+	{
+		rules.clear();
 
-        if (config.enableZulrahPreset())
-        {
-            // 1044 => Zulrah magic; 1045 => Zulrah range
-            rules.put(1044, new ProjectileRule(PrayerType.MAGIC, "Mage"));
-            rules.put(1045, new ProjectileRule(PrayerType.RANGED, "Range"));
-        }
+		if (config.enableZulrahPreset())
+		{
+			// 1044 => Zulrah magic; 1045 => Zulrah range
+			rules.put(1044, new ProjectileRule(PrayerType.MAGIC, "Mage"));
+			rules.put(1045, new ProjectileRule(PrayerType.RANGED, "Range"));
+		}
 
-        for (ParsedEntry pe : RuleParser.parseLines(config.extraMappings()))
-        {
-            try
-            {
-                int id = Integer.parseInt(pe.key);
-                PrayerType p = PrayerType.fromLabel(pe.value);
-                rules.put(id, new ProjectileRule(p, pe.value));
-            }
-            catch (NumberFormatException ex)
-            {
-                log.debug("ProjectilePrayHelper: skipped non-int projectile id '{}'", pe.key);
-            }
-        }
+		for (ParsedEntry pe : RuleParser.parseLines(config.extraMappings()))
+		{
+			try
+			{
+				int id = Integer.parseInt(pe.key);
+				PrayerType p = PrayerType.fromLabel(pe.value);
+				rules.put(id, new ProjectileRule(p, pe.value));
+			}
+			catch (NumberFormatException ex)
+			{
+				log.debug("ProjectilePrayHelper: skipped non-int projectile id '{}'", pe.key);
+			}
+		}
 
-        log.debug("Loaded {} projectile rules", rules.size());
-    }
+		log.debug("Loaded {} projectile rules", rules.size());
+	}
 
-    public ProjectileRule ruleFor(Projectile proj)
-    {
-        return rules.get(proj.getId());
-    }
+	public ProjectileRule ruleFor(Projectile proj)
+	{
+		return rules.get(proj.getId());
+	}
 }
