@@ -7,10 +7,10 @@
  modification, are permitted provided that the following conditions are met:
 
  1. Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
+	list of conditions and the following disclaimer.
  2. Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -36,17 +36,17 @@
 	<name>RuneLite Client</name>
 
 	<properties>
-        <pluginhub.version>1.12.5.2</pluginhub.version>
-        <ruinelite.version>1.0.0</ruinelite.version>
-        <runelite.version>1.12.6</runelite.version>
-        <combined.version>${ruinelite.version}-${runelite.version}</combined.version>
+		<pluginhub.version>1.12.5.2</pluginhub.version>
+		<ruinelite.version>1.0.0</ruinelite.version>
+		<runelite.version>1.12.6</runelite.version>
+		<combined.version>${ruinelite.version}-${runelite.version}</combined.version>
 
-        <jarsigner.keystore></jarsigner.keystore>
-        <jarsigner.alias></jarsigner.alias>
-        <jarsigner.storepass></jarsigner.storepass>
-        <jarsigner.keypass></jarsigner.keypass>
+		<jarsigner.keystore></jarsigner.keystore>
+		<jarsigner.alias></jarsigner.alias>
+		<jarsigner.storepass></jarsigner.storepass>
+		<jarsigner.keypass></jarsigner.keypass>
 
-        <jarsigner.skip>true</jarsigner.skip>
+		<jarsigner.skip>true</jarsigner.skip>
 		<pmd.skip>true</pmd.skip>
 		<git.commit.id.abbrev>nogit</git.commit.id.abbrev>
 		<git.dirty>false</git.dirty>
@@ -509,6 +509,17 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<configuration>
+					<systemPropertyVariables>
+						<plugin.graph.file>${project.build.directory}/plugin-graph.dot</plugin.graph.file>
+					</systemPropertyVariables>
+					<argLine>-Dplugin.graph.file=${project.build.directory}/plugin-graph.dot</argLine>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
