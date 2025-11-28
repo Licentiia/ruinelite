@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Build Shaded JAR
+        run: mvn -q -e -DskipTests clean package
+
+      - name: Extract versions
+        id: versions
+        run: |
+          ruinelite=$(grep -oPm1 "(?<=<ruinelite.version>)[^<]+" runelite-client/pom.xml)
+          upstream=$(grep -oPm1 "(?<=<runelite.version>)[^<]+" runelite-client/pom.xml)
+          combined="${ruinelite}-${upstream}"
+          echo "ruinelite=$ruinelite" >> $GITHUB_OUTPUT
+          echo "upstream=$upstream" >> $GITHUB_OUTPUT
+          echo "combined=$combined" >> $GITHUB_OUTPUT
+
+      - name: Create Release (with changelog)
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "${{ steps.versions.outputs.ruinelite }}"
+          name: "RuinElite ${{ steps.versions.outputs.ruinelite }} (RuneLite ${{ steps.versions.outputs.upstream }})"
+          generate_release_notes: true
+          artifacts: |
+            runelite-client/target/runelite-client-${{ steps.versions.outputs.combined }}.jar
+            runelite-client/target/runelite-client-${{ steps.versions.outputs.combined }}-shaded.jar
+          prerelease: false
