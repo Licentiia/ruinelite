@@ -1,7 +1,6 @@
 package net.runelite.client.plugins.ruinelite.bosses.doom;
 
 import net.runelite.api.Client;
-import net.runelite.api.GraphicID;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GraphicsObjectCreated;

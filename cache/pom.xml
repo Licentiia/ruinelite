@@ -37,7 +37,7 @@
 
 	<properties>
 		<cache.version>165</cache.version>
-		
+
 		<antlr4.version>4.13.1</antlr4.version>
 	</properties>
 
@@ -116,7 +116,7 @@
 					<enableAssertions>true</enableAssertions>
 					<argLine>-Xmx2048m</argLine>
 					<systemProperties>
-						<cache.tmpdir>${cache.tmpdir}</cache.tmpdir>
+						<!-- <cache.tmpdir>${cache.tmpdir}</cache.tmpdir> -->
 					</systemProperties>
 				</configuration>
 			</plugin>
