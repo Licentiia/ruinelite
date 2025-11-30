@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import net.runelite.api.Client;
 import net.runelite.api.NPC;
 import net.runelite.api.SpriteID;
 
@@ -16,8 +15,7 @@ import net.runelite.client.ui.overlay.components.TitleComponent;
 
 public class YamaPrayerQueueOverlay extends OverlayPanel
 {
-	private final Client client;
-	private final YamaPrayerPlugin plugin;
+    private final YamaPrayerPlugin plugin;
 	private final YamaPrayerConfig config;
 	private final SpriteManager spriteManager;
 
@@ -26,13 +24,11 @@ public class YamaPrayerQueueOverlay extends OverlayPanel
 
 	@Inject
 	public YamaPrayerQueueOverlay(
-			Client client,
 			YamaPrayerPlugin plugin,
 			YamaPrayerConfig config,
 			SpriteManager spriteManager)
 	{
-		this.client = client;
-		this.plugin = plugin;
+        this.plugin = plugin;
 		this.config = config;
 		this.spriteManager = spriteManager;
 
