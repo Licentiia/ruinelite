@@ -15,7 +15,7 @@ import net.runelite.client.ui.overlay.components.TitleComponent;
 
 public class YamaPrayerQueueOverlay extends OverlayPanel
 {
-    private final YamaPrayerPlugin plugin;
+	private final YamaPrayerPlugin plugin;
 	private final YamaPrayerConfig config;
 	private final SpriteManager spriteManager;
 
@@ -28,7 +28,7 @@ public class YamaPrayerQueueOverlay extends OverlayPanel
 			YamaPrayerConfig config,
 			SpriteManager spriteManager)
 	{
-        this.plugin = plugin;
+		this.plugin = plugin;
 		this.config = config;
 		this.spriteManager = spriteManager;
 
