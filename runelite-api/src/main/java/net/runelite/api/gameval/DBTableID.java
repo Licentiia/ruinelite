@@ -415,13 +415,13 @@ public final class DBTableID
 			public static final int QUEST_EXISTENTIALCRISIS = 5192;
 			public static final int QUEST_IMPENDINGCHAOS = 5193;
 			public static final int MINIQUEST_VALETOTEMS = 5194;
-			public static final int MINIQUEST_TUTORIALISLAND = 7033;
 			public static final int QUEST_PANDEMONIUM = 7103;
 			public static final int QUEST_PRYINGTIMES = 7104;
 			public static final int QUEST_CURRENTAFFAIRS = 7105;
 			public static final int QUEST_TROUBLEDTORTUGANS = 7106;
 			public static final int QUEST_REDREEF = 7107;
 			public static final int QUEST_BURIALATSEA = 7108;
+			public static final int QUEST_LEARNINGTHEROPES = 9643;
 		}
 	}
 
@@ -4958,39 +4958,44 @@ public final class DBTableID
 		public static final int COL_VARIABLE = 5;
 
 		/**
-		 * integer
+		 * boolean
 		 */
-		public static final int COL_AREA = 6;
+		public static final int COL_AUTOMATIC_UNLOCK = 6;
 
 		/**
 		 * integer
 		 */
-		public static final int COL_AREA_DEFAULT = 7;
+		public static final int COL_AREA = 7;
+
+		/**
+		 * integer
+		 */
+		public static final int COL_AREA_DEFAULT = 8;
 
 		/**
 		 * boolean
 		 */
-		public static final int COL_HIDDEN = 8;
+		public static final int COL_HIDDEN = 9;
 
 		/**
 		 * integer
 		 */
-		public static final int COL_HOLIDAY = 9;
+		public static final int COL_HOLIDAY = 10;
 
 		/**
 		 * dbrow
 		 */
-		public static final int COL_SECONDARY_TRACK = 10;
+		public static final int COL_SECONDARY_TRACK = 11;
 
 		/**
 		 * integer
 		 */
-		public static final int COL_RELEASE_TYPE = 11;
+		public static final int COL_RELEASE_TYPE = 12;
 
 		/**
 		 * integer
 		 */
-		public static final int COL_RELATED_CONTENT = 12;
+		public static final int COL_RELATED_CONTENT = 13;
 
 		public static final class Row
 		{
@@ -9464,14 +9469,19 @@ public final class DBTableID
 		public static final int COL_EXTENSION_MIN_MAX = 15;
 
 		/**
+		 * (dbrow, integer, integer)
+		 */
+		public static final int COL_EXTENSION_ADDITIVE = 16;
+
+		/**
 		 * dbrow
 		 */
-		public static final int COL_BLOCK_UNLOCK = 16;
+		public static final int COL_BLOCK_UNLOCK = 17;
 
 		/**
 		 * integer
 		 */
-		public static final int COL_RELATED_CONTENT = 17;
+		public static final int COL_RELATED_CONTENT = 18;
 
 		public static final class Row
 		{
@@ -10034,6 +10044,11 @@ public final class DBTableID
 		public static final int COL_AREA_NAME_IN_HELPER = 3;
 
 		/**
+		 * string
+		 */
+		public static final int COL_AREA_HINT = 4;
+
+		/**
 		 * integer
 		 */
 		public static final int COL_RELATED_CONTENT = 8;
@@ -10262,6 +10277,7 @@ public final class DBTableID
 			public static final int SLAYER_REWARDS_LONGER_WYRMS = 9419;
 			public static final int SLAYER_REWARDS_UNLOCK_GRYPHONS = 9420;
 			public static final int SLAYER_REWARDS_UNLOCK_HELM_HOODED = 9641;
+			public static final int SLAYER_REWARDS_LONGER_GRYPHONS = 9642;
 		}
 	}
 
@@ -14767,6 +14783,11 @@ public final class DBTableID
 		public static final int COL_LEVEL_REQUIRED = 4;
 
 		/**
+		 * dbrow
+		 */
+		public static final int COL_QUEST_REQUIRED = 5;
+
+		/**
 		 * graphic
 		 */
 		public static final int COL_DOCK_SPRITE_SMALL = 13;
@@ -14856,8 +14877,6 @@ public final class DBTableID
 			public static final int SAILING_NPC_BOAT_BT_TRIAL_MASTER_3_BOAT = 8658;
 			public static final int SAILING_NPC_BOAT_TROUBLED_TORTUGANS_RED_REEF = 8659;
 			public static final int SAILING_NPC_BOAT_RED_REEF_ZENITH = 8660;
-			public static final int SAILING_NPC_BOAT_DYNAMIC_1 = 8661;
-			public static final int SAILING_NPC_BOAT_DYNAMIC_2 = 8662;
 		}
 	}
 
